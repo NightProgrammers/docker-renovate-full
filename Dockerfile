@@ -1,5 +1,6 @@
 # renovate: datasource=npm depName=renovate versioning=npm
 ARG RENOVATE_VERSION=32.20.1
+ARG RENOVATE_TARBAR=https://github.com/NightProgrammers/renovate/releases/download/v0.0.0_tgit/renovate-v0.0.0-semantic-release.tgz
 
 # Base image
 #============
@@ -24,87 +25,86 @@ FROM base as tsbuild
 
 COPY . .
 
-RUN set -ex; \
-  yarn install; \
-  yarn build; \
-  chmod +x dist/*.js;
-
 ARG RENOVATE_VERSION
+ARG RENOVATE_TARBAR
+
 RUN set -ex; \
   yarn version --new-version ${RENOVATE_VERSION}; \
-  yarn add -E  renovate@${RENOVATE_VERSION} --production;  \
+  yarn add -E ${RENOVATE_TARBAR} --production; \
+  yarn install; \
+  yarn build; \
+  chmod +x dist/*.js; \
   node -e "new require('re2')('.*').exec('test')";
-
 
 # Final image
 #============
 FROM base as final
 
 # renovate: datasource=docker versioning=docker
-RUN install-tool docker 20.10.14
+# RUN install-tool docker 20.10.14
 
 # renovate: datasource=adoptium-java
-RUN install-tool java 11.0.14+9
+# RUN install-tool java 11.0.14+9
 
 # renovate: datasource=gradle-version versioning=gradle
-RUN install-tool gradle 6.9.2
+# RUN install-tool gradle 6.9.2
 
 # renovate: datasource=github-releases lookupName=containerbase/erlang-prebuild versioning=docker
-RUN install-tool erlang 22.3.4.25
+# RUN install-tool erlang 22.3.4.25
 
 # renovate: datasource=docker versioning=docker
-RUN install-tool elixir 1.13.3
+# RUN install-tool elixir 1.13.3
 
 # renovate: datasource=github-releases lookupName=containerbase/php-prebuild
-RUN install-tool php 7.4.28
+# RUN install-tool php 7.4.28
 
 # renovate: datasource=github-releases lookupName=composer/composer
-RUN install-tool composer 2.3.4
+# RUN install-tool composer 2.3.4
 
 # renovate: datasource=docker versioning=docker
 RUN install-tool golang 1.18.1
 
 # renovate: datasource=github-releases lookupName=containerbase/python-prebuild
-RUN install-tool python 3.10.4
+# RUN install-tool python 3.10.4
 
 # renovate: datasource=pypi
-RUN install-pip pipenv 2020.11.15
+# RUN install-pip pipenv 2020.11.15
 
 # renovate: datasource=github-releases lookupName=python-poetry/poetry
-RUN install-tool poetry 1.1.13
+# RUN install-tool poetry 1.1.13
 
 # renovate: datasource=pypi
-RUN install-pip hashin 0.17.0
+# RUN install-pip hashin 0.17.0
 
 # renovate: datasource=pypi
-RUN install-pip pip-tools 6.6.0
+# RUN install-pip pip-tools 6.6.0
 
 # renovate: datasource=docker versioning=docker
-RUN install-tool rust 1.60.0
+# RUN install-tool rust 1.60.0
 
 # renovate: datasource=github-releases lookupName=containerbase/ruby-prebuild
-RUN install-tool ruby 3.1.2
+# RUN install-tool ruby 3.1.2
 
 # renovate: datasource=rubygems versioning=ruby
-RUN install-gem bundler 2.3.11
+# RUN install-gem bundler 2.3.11
 
 # renovate: datasource=rubygems versioning=ruby
-RUN install-gem cocoapods 1.11.3
+# RUN install-gem cocoapods 1.11.3
 
-# renovate: datasource=docker lookupName=mcr.microsoft.com/dotnet/sdk
-RUN install-tool dotnet 6.0.202
-
-# renovate: datasource=npm versioning=npm
-RUN install-tool pnpm 6.32.4
+# # renovate: datasource=docker lookupName=mcr.microsoft.com/dotnet/sdk
+# RUN install-tool dotnet 6.0.202
 
 # renovate: datasource=npm versioning=npm
-RUN install-npm lerna 4.0.0
+# RUN install-tool pnpm 6.32.4
+
+# renovate: datasource=npm versioning=npm
+# RUN install-npm lerna 4.0.0
 
 # renovate: datasource=github-releases lookupName=helm/helm
-RUN install-tool helm v3.8.1
+# RUN install-tool helm v3.8.1
 
 # renovate: datasource=github-releases lookupName=jsonnet-bundler/jsonnet-bundler
-RUN install-tool jb v0.4.0
+# RUN install-tool jb v0.4.0
 
 COPY --from=tsbuild /usr/src/app/package.json package.json
 COPY --from=tsbuild /usr/src/app/dist dist
