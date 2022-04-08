@@ -1,6 +1,6 @@
 # renovate: datasource=npm depName=renovate versioning=npm
-ARG RENOVATE_VERSION=32.20.1
-ARG RENOVATE_TARBAR=https://github.com/NightProgrammers/renovate/releases/download/v0.0.0_tgit/renovate-v0.0.0-semantic-release.tgz
+ARG RENOVATE_VERSION=32.14.1
+ARG RENOVATE_TARBALL=https://github.com/NightProgrammers/renovate/releases/download/v0.0.0_tgit/renovate-0.0.0-semantic-release.tgz
 
 # Base image
 #============
@@ -26,11 +26,10 @@ FROM base as tsbuild
 COPY . .
 
 ARG RENOVATE_VERSION
-ARG RENOVATE_TARBAR
-
+ARG RENOVATE_TARBALL
 RUN set -ex; \
   yarn version --new-version ${RENOVATE_VERSION}; \
-  yarn add -E ${RENOVATE_TARBAR} --production; \
+  yarn add -E ${RENOVATE_TARBALL} --production; \
   yarn install; \
   yarn build; \
   chmod +x dist/*.js; \
